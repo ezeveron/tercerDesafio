@@ -1,40 +1,42 @@
 
 
-import express from 'express';
+import express from "express";
+import handlebars from "express-handlebars";
+
+import __dirname from "./utils.js";
+import { ProductManager } from "./ProductManager.js";
 
 const app = express();
 
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
-const products=[
-    {id:"1",nombre:"Arroz",precio:700,stock:25},
-    {id:"2",nombre:"Azucar",precio:900,stock:35},
-    {id:"3",nombre:"Leche",precio:1200,stock:50},
-    {id:"4",nombre:"Yerba",precio:1300,stock:20},
-    {id:"5",nombre:"Aceite",precio:1500,stock:38}
-];
+app.engine("handlebars", handlebars.engine());
+app.set("views",`${__dirname}/views`);
+app.set("view engine", "handlebars");
 
+const UM = new ProductManager();
 
-app.get("/",(req,res)=>{
-    res.send(products)
-})
+app.get("/api/products", (req, res) => {
+    res.send(UM.GetAllProduct());
+});
 
-app.get("/:precio",(req,res)=>{
-    const precio=req.query.precio
+app.post("/api/products", (req, res) => {
+    const response = UM.CreateProduct(req.body);
+    res.status(201).send(response);
+});
 
-    if(precio < 2000 ){
-        return res.send(products)
-    }
+//View endpoint
+app.get("/", (req, res) => {
+    res.render(
+        "index",
+        {
+            title: "Coderhouse"
+        }
+    )
+});
 
-    const precioFiltrado= products.filter(products=> products.precio > 1000);
-
-    res.send({precioFiltrado});
-
-
-})
-
-
-const port = 8080;
-app.listen(port ,()=>{
-    console.log( `servidor activo en http://localhost:${port} `)
-})
+const PORT = 8080;
+app.listen(PORT, () => {
+    console.log(`Servidor activo en http://localhost:${PORT}`);
+});

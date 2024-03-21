@@ -1,0 +1,19 @@
+
+
+<h1>Usuarios</h1>
+<div id="products">
+</div>
+
+<script>
+    const productsTag = document.querySelector("#products");
+
+    //Polling Event
+    let count = 1;
+    setInterval(() => {
+        console.log(`Realizo petición ${count}`);
+        fetch("/api/products").then(result => result.json()).then(json => {
+        productsTag.innerHTML = JSON.stringify(json);
+    });
+    count++
+    }, 2000);
+</script>

@@ -2,6 +2,7 @@
 
 import express from "express";
 import handlebars from "express-handlebars";
+import{ Server} from "socket.io";
 
 import __dirname from "./utils.js";
 import { ProductManager } from "./ProductManager.js";
@@ -37,6 +38,18 @@ app.get("/", (req, res) => {
 });
 
 const PORT = 8080;
-app.listen(PORT, () => {
+const httpServer=app.listen(PORT, () => {
     console.log(`Servidor activo en http://localhost:${PORT}`);
 });
+
+const socketServer = new Server (httpServer)
+
+socketServer.on("connection", socket=>{
+    console.log("Nuevo producto creado", socket.id)
+
+
+    socket.on("messege",data=>{
+        console.log(data)
+        socketServer.emit("messegeShow",data)
+    })
+})

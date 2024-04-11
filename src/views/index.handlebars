@@ -1,19 +1,16 @@
 
 
-<h1>Productos</h1>
-<div id="products">
+<div class="box">
+    <h1>Productos</h1>
+    <div class="products-box">
+        {{#each products}}
+            <div class="product-card">
+                <h3>{{this.title}}</h3>
+                <hr>
+                <p>Categoria: {{this.category}}</p>
+                <p>Descripción: {{this.description}}</p>
+                <p>Precio: $ {{this.price}}</p>
+            </div>
+        {{/each}}
+    </div>
 </div>
-
-<script>
-    const productsTag = document.querySelector("#products");
-
-    //Polling Event
-    let count = 1;
-    setInterval(() => {
-        console.log(`Realizo petición ${count}`);
-        fetch("/api/products").then(result => result.json()).then(json => {
-        productsTag.innerHTML = JSON.stringify(json);
-    });
-    count++
-    }, 2000);
-</script>
